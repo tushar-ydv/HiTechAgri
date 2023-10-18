@@ -1,0 +1,663 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2709
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\froman\fcharset0 TimesNewRomanPSMT;\f1\froman\fcharset0 Times-Roman;}
+{\colortbl;\red255\green255\blue255;\red26\green26\blue26;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c13333\c13333\c13333;\cssrgb\c0\c0\c0;}
+\paperw11900\paperh16840\margl1440\margr1440\vieww15520\viewh8400\viewkind0
+\deftab720
+\pard\pardeftab720\li15\fi-16\partightenfactor0
+
+\f0\fs32 \cf2 \expnd0\expndtw0\kerning0
+\outl0\strokewidth0 \strokec2 from flask import Flask\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\fi40\ri6600\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 ,render_template,request,jsonify,session import\'a0 sqlite3 as sql import base64 import pandas as pd\'a0 from sklearn.preprocessing import LabelEncoder\'a0 #from flask_bootstrap import Bootstrap import\'a0 numpy as np from sklearn.utils import shuffle import\'a0 joblib app = Flask(__name__) app.secret_key = 'any\'a0 random string' @app.route('/', methods=['GET',\'a0 'POST']) def home():\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li276\fi-277\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 return\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi-11\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 render_template('index.html')\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li17\fi-18\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 def\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li15\fi-16\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 validate(username,password):\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li17\fi-18\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 con =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li25\fi-26\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 sql.connect('static/chat.db')\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li17\fi-18\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 completion = False with con:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li570\fi-571\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 cur = con.cursor()\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li583\fi-584\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 cur.execute('SELECT * FROM\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li577\fi-578\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 persons') rows = cur.fetchall() for\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+
+\f0\fs32 \cf2 \strokec2 row in rows: dbuser = row[1]\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li584\fi-585\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 dbpass = row[2] if dbuser ==\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li578\fi-579\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 username:
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1101\fi-1102\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 completion = (dbpass ==\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li295\fi-296\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 password) return completion\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li23\fi22\ri8609\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 @app.route('/login', methods=['GET',\'a0 'POST']) def login(): error = None if\'a0 request.method == 'POST':\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li565\fi-566\ri8120\qj\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 username = request.form['username']\'a0 password = request.form['password']\'a0 completion =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li581\fi-582\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 validate(username,password) if\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li583\fi-584\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 completion == False:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li574\fi261\ri7762\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 error = 'invalid Credentials. please try\'a0 again.' else:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li825\fi-826\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 session['username'] =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi-11\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 request.form['username'] return\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi-11\ri8053\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 render_template('index111.html') return\'a0 render_template('index.html', error=error)\'a0 @app.route('/view', methods=['GET',\'a0 'POST']) def view():\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li276\fi-277\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 return\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi-11\ri8558\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 render_template('index111.html')\'a0 @app.route('/cropa', methods=['GET',\'a0 'POST']) def cropa():
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li276\fi-277\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 return\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi-11\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 render_template('cropdetails.html')\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li46\fi-47\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 @app.route('/about', methods=['GET',\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li27\fi-28\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 'POST']) def about():\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li542\fi-543\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 return render_template('About.html')\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li46\fi-47\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 @app.route('/register', methods =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li37\fi-38\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 ['GET','POST']) def register(): if\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi-11\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 request.method == 'POST': try:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li833\fi-834\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 name = request.form['name']\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li844\fi-845\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 username =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li842\fi-843\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 request.form['username']\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+
+\f0\fs32 \cf2 \strokec2 password =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+
+\f0\fs32 \cf2 \strokec2 request.form['password'] with\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li857\fi-858\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 sql.connect("static/chat.db") as\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li849\fi-850\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 con:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1101\fi-1102\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 cur = con.cursor()\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li769\fi-770\ri4444\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 cur.execute("INSERT INTO persons(name,username,password)\'a0 VALUES\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li24\fi-25\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 (?,?,?)",(name,username,password))\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li548\fi-549\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 con.commit() msg = "Record\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li556\fi-557\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 successfully added" except:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li836\fi-837\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 con.rollback() msg =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li587\fi-588\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 "error in insert operation"\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li569\fi-570\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 finally:
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li829\fi-830\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 return\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li295\fi-296\ri7715\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 render_template("index.html",msg = msg)\'a0 con.close() return\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li295\fi-296\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 render_template('register.html')\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li46\fi-47\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 @app.route('/list'\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li31\fi-32\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 ) def list():\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li215\fi-216\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 con = sql.connect("static/chat.db")\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li17\fi-18\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 con.row_factory = sql.Row cur =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi6\ri7893\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 con.cursor() cur.execute("select * from\'a0 persons") rows = cur.fetchall(); return\'a0 render_template("list.html",rows = rows)\'a0 @app.route('/crop_predict',methods=['GET' ,'POST']) def cr(): lt= [] lst = [] data =\'a0 pd.read_csv(r'dataset\\Crop.csv') city =\'a0 pd.read_csv(r'dataset\\Ploted_600.csv') # data = shuffle(data) y =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li318\fi-319\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 data.loc[:,'Crop']\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li316\fi-317\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 labelEncoder_y =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li313\fi-314\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 LabelEncoder() y =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li316\fi-317\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 labelEncoder_y.fit_transform\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li325\fi-326\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 (y) data['crop_num'] = y\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li297\fi-298\ri7035\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 X = data.loc[:,['N','P','K','pH']].astype(float) y =\'a0 data.loc[:,'crop_num'] # Training Model from\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li320\fi5\ri6373\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 sklearn.neighbors import KNeighborsClassifier clf =\'a0 KNeighborsClassifier(n_jobs=10,\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li311\fi3\ri5151\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 n_neighbors=10,weights='distance') clf.fit(X,y) if\'a0 request.method == 'POST': city_name = request.form['city'] N\'a0 = request.form['Nitrogen']\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li568\fi-568\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 P = request.form['Phosphorous'] K =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li577\fi-578\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 request.form['Potassium'] pH =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+
+\f0\fs32 \cf2 \strokec2 request.form['pH'] if len(city_name)\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li617\fi-618\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 != 0: print(city_name) npk =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li583\fi-584\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 city[city['Location'] == city_name]\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li581\fi-582\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 val = [] for index, row in\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li580\fi-581\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 npk.iterrows():\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li836\fi263\ri5529\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 val = [row['N'],row['P'],row['K'],row['pH']] print(val)\'a0 columns = ['N','P','K','pH'] values =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li833\fi-834\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 np.array([val[0],val[1],val[2],val[3]]) pred =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li829\fi-830\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 pd.DataFrame(values.reshape(-1,\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li834\fi-835\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 len(values)),columns=columns) prediction =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li836\fi-837\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 clf.predict(pred)\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li829\fi-830\ri4917\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 # distances, indices = clf.kneighbors(pred, n_neighbors=10) # prediction real_pred =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li849\fi-850\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 clf.predict_proba(pred)\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li842\fi-843\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 print(real_pred) lst = [] for i\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li846\fi-847\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 in range(101):
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1099\fi-1100\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 if real_pred[0][i] != 0.0:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1368\fi-1369\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 lst.append\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li843\fi-844\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 (i) lt= [] for i\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li833\fi-834\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 in range(10):\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1100\fi-1101\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 load_data = data[data.index ==\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1116\fi-1117\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 lst[i]] for index, row in\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+
+\f0\fs32 \cf2 \strokec2 load_data.iterrows():\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1368\fi-1369\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 lt.append(row['Crop'])\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li570\fi-571\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 else:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li829\fi-830\ri5903\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 print(N,P,K,pH) columns = ['N','P','K','pH'] values =\'a0 np.array([N,P,K,pH]) pred =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li842\fi-843\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 pd.DataFrame(values.reshape(-1,\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li847\fi-848\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 len(values)),columns=columns) prediction =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li849\fi-850\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 clf.predict(pred)\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li829\fi-830\ri4917\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 # distances, indices = clf.kneighbors(pred, n_neighbors=10) # prediction real_pred =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li849\fi-850\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 clf.predict_proba(pred) for i\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li846\fi-847\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 in range(101):\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1099\fi-1100\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 if real_pred[0][i] != 0.0:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1368\fi-1369\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 lst.append(i)\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li834\fi-835\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 for i in\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li829\fi-830\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 range(10):\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1100\fi-1101\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 load_data = data[data.index ==\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1116\fi-1117\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 lst[i]]
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1100\fi-1101\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 for index, row in\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1116\fi-1117\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 load_data.iterrows():\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1368\fi-1369\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 lt.append(row['Crop'])\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li563\fi-564\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 # print(city,N,P,K,pH) return\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li295\fi-296\ri6831\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 render_template('crop.html',crops=lt,crop_num =\'a0 len(lt),display=True)\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li46\fi-47\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 @app.route('/crop_pre',methods=['GET','\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li27\fi-28\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 POST']) def crop(): val_final=[] data =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li23\fi-24\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 pd.read_csv(r'dataset\\Crop.csv')\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li294\fi-295\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 #print(data) city =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li311\fi-312\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 pd.read_csv(r'dataset\\Ploted_600.csv\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li328\fi-329\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 ')\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li294\fi-295\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 #print(city)\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li297\fi-298\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 X =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li318\fi-319\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 data.loc[:,['N','P','K','pH']]\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li314\fi-315\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 y = data.loc[:,['Crop']]\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li297\fi-298\ri6373\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 X = data.loc[:,['N','P','K','pH']].astype(float) from\'a0 sklearn.neighbors import KNeighborsClassifier clf =\'a0 KNeighborsClassifier(n_jobs=10,\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li299\fi16\ri5378\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 n_neighbors=10,weights='distance') clf.fit(X,y) lst = [] lt = [] if request.method ==\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li581\fi-582\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 'POST': crop =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li564\fi-565\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 request.form['crop']\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li566\fi-567\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 N1 = request.form['Nitrogen']
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li568\fi-568\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 P1 =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li577\fi-578\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 request.form['Phosphorous'\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li586\fi-587\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 ] K1 =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li577\fi-578\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 request.form['Potassium']\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+
+\f0\fs32 \cf2 \strokec2 pH1 = request.form['pH']\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li576\fi-577\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 #crop =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li592\fi-592\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 str(input('Crop_name')) if\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li581\fi-582\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 len(crop) != 0: print(crop)\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li833\fi-834\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 npk = data[data['Crop'] ==\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li849\fi-850\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 crop] val = [] for index,\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li842\fi-843\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 row in npk.iterrows():\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li834\fi265\ri5527\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 val = [row['N'],row['P'],row['K'],row['pH']] print(val)\'a0 a=float(N1) b=float(P1) c=float(K1) d=float(pH1)\'a0 val1=tuple(val) #val2=np.array(val0) val0=(a,b,c,d)\'a0 val2=tuple(val0) val_final=(val1[0]-val2[0],val1[1]- val2[1],val1[2]-val2[2],val1[3]-val2[3])\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li837\fi-838\ri4862\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 df=pd.DataFrame(val_final,columns=['as']) for i in val_final: lst.append(i)\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li834\fi-835\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 for i in\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li829\fi-830\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 range(4):\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1100\fi-1101\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 load_data = df[df.index ==\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1116\fi-1117\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 lst[i]] for index, row in\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+
+\f0\fs32 \cf2 \strokec2 load_data.iterrows():
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li1368\fi-1369\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 lt.append(row['as']) return\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li231\fi-232\ri4026\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 render_template('soil_parameters.html',crops=lst,val_final=len(lst),displ ay=True)\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li46\fi-47\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 @app.route('/crop_price',methods=['GET',\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li40\fi-41\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 'POST']) def price(): lst=[] if\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li23\fi-24\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 request.method == 'POST':\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li566\fi-567\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 Location = request.form['Location']\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li571\fi-572\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 date = request.form['date'] temp\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li585\fi-586\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 = request.form['temp']\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li581\fi-582\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 Humidity =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li577\fi-578\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 request.form['Humidity'] pH =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+
+\f0\fs32 \cf2 \strokec2 request.form['pH'] rainfall =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+
+\f0\fs32 \cf2 \strokec2 request.form['rainfall']\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li579\fi-580\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 test_data=[temp,Humidity,pH,r\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li587\fi-588\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 ainfall] # Load the model from\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li579\fi-580\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 the file\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li14\fi527\ri3409\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 ranfor_from_joblib = joblib.load(r'C:/Users/arnav/python/Intelligent Crop\'a0 Recommendation System/M3/Models/ranfor_model1.pkl') # Use the loaded\'a0 model to make predictions\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi-11\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 prediction_crop=ranfor_from_joblib.predict([test_data])\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li563\fi-564\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 # Load the model from the file\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li14\fi527\ri3249\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 ranfor_from_joblib1 = joblib.load(r'C:/Users/arnav/python/Intelligent Crop\'a0 Recommendation System/M3/Models/ranfor_model2.pkl') # Use the loaded\'a0 model to make predictions\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi-11\ri4729\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 prediction_price=ranfor_from_joblib1.predict([test_data]) for dat in\'a0 [prediction_crop,prediction_price]:\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li815\fi-816\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 lst.append(dat) return\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li10\fi-11\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 render_template('price.html',crops=lst,display=Tru\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li17\fi-18\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 e) if __name__ == '__main__': app.run(debug =\'a0\'a0
+\f1\fs24 \cf0 \strokec3 \
+\pard\pardeftab720\li14\fi-15\partightenfactor0
+
+\f0\fs32 \cf2 \strokec2 True )
+\f1\fs24 \cf0 \strokec3 \
+}
